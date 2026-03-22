@@ -1,0 +1,53 @@
+# ------------------------------------------------------------------------------
+# Build artifacts (solution-wide)
+# ------------------------------------------------------------------------------
+/artifacts/
+/BenchmarkDotNet.Artifacts/
+**/bin/
+/**/obj/
+
+# NuGet outputs (don’t commit built packages or local feeds)
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+
+# Test & coverage outputs
+TestResults/
+*.trx
+*.coverage
+*.cov
+coverage*.xml
+lcov*.info
+
+# IDE / Editor caches
+.vs/
+.vscode/
+.idea/
+.dotnet/
+*.suo
+*.user
+*.userosscache
+*.csproj.user
+*.userprefs
+*.zip
+
+# OS noise
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs & caches
+*.log
+*.cache
+
+# MSBuild/restore lockfiles (rarely used now; keep out if generated)
+project.lock.json
+
+# Template-only files
+KeelMatrixNuGetTemplate.vstemplate
+**/ProjectTemplate.vstemplate
+
+# Generated editorconfig from SDK (keep your root .editorconfig tracked)
+**/GeneratedMSBuildEditorConfig.editorconfig

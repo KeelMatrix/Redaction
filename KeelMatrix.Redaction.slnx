@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj" />
+  <Project Path="tests/KeelMatrix.Redaction.Tests/KeelMatrix.Redaction.Tests.csproj" />
+  <Project Path="bench/KeelMatrix.Redaction.Benchmarks/KeelMatrix.Redaction.Benchmarks.csproj" />
+</Solution>

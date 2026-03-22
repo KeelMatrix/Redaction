@@ -1,0 +1,92 @@
+# Top-level EditorConfig
+# For more information, see https://aka.ms/editorconfigdocs
+
+root = true
+
+# =====================================================================================
+# Global language settings
+# =====================================================================================
+
+[*.cs]
+# Encoding & formatting
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+
+# Code style
+# Organize usings
+dotnet_sort_system_directives_first = true
+
+# Prefer simple member access
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+
+# New line options
+csharp_new_line_before_open_brace = all:suggestion
+
+# Analyzer: ignore IDE0130 (Namespace does not match folder structure)
+dotnet_diagnostic.IDE0130.severity = none
+
+[*.{cs,vb}]
+dotnet_code_quality.CA1826.exclude_ordefault_methods = true
+
+[*.{csproj,props,targets}]
+indent_style = space
+indent_size = 2
+
+# (we continue to rely on: EnableNETAnalyzers=true, AnalysisLevel=8.0-recommended)
+
+# =====================================================================================
+# Analyzer severities (global)
+# =====================================================================================
+
+# Public API analyzers
+dotnet_diagnostic.RS0016.severity = error   # Add new APIs to Unshipped
+dotnet_diagnostic.RS0017.severity = error   # Mark APIs as obsolete/removed
+dotnet_diagnostic.RS0025.severity = error   # Duplicate member in the public API file
+dotnet_diagnostic.RS0037.severity = error   # The generated public API file is not up to date
+
+# =====================================================================================
+# Per-project severity settings
+# =====================================================================================
+
+# tests/*
+[tests/**.cs]
+dotnet_diagnostic.CA1707.severity = none   # allow underscores in identifiers (test names)
+dotnet_diagnostic.CS1591.severity = none   # missing XML docs off in tests
+dotnet_diagnostic.IDE0290.severity = none  # disable “Use primary constructor”
+
+# src/KeelMatrix.Redaction/*
+[src/KeelMatrix.Redaction/**.cs]
+dotnet_diagnostic.CA1510.severity = none   # prefer ThrowIfNull
+dotnet_diagnostic.CA1513.severity = none   # prefer nameof(...) in exceptions
+dotnet_diagnostic.CA2249.severity = none   # prefer string.Contains over IndexOf
+dotnet_diagnostic.IDE0290.severity = none  # “Use primary constructor”
+dotnet_diagnostic.RCS1001.severity = none  # “Add braces to if statement”
+dotnet_diagnostic.IDE0057.severity = none  # Use range operator
+dotnet_diagnostic.CA1850.severity = none   # Prefer static 'HashData' method over 'ComputeHash'
+dotnet_diagnostic.IDE0056.severity = none  # Use index operator
+
+# =====================================================================================
+# Configuration-specific severity settings
+# (Order matters: these come last to override above where applicable)
+# =====================================================================================
+
+# In Debug: suppress CS1591 across the board (keep the build clean)
+[*.cs]
+build_property.Configuration = Debug
+dotnet_diagnostic.CS1591.severity = none
+
+# When XML docs are not being generated, CS1591 is irrelevant: suppress it
+[*.cs]
+build_property.GenerateDocumentationFile = false
+dotnet_diagnostic.CS1591.severity = none
+
+# In Release + docs on: surface CS1591 as a Warning (Release will promote it to Error)
+[*.cs]
+build_property.Configuration = Release
+build_property.GenerateDocumentationFile = true
+dotnet_diagnostic.CS1591.severity = warning

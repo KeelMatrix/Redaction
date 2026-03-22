@@ -1,0 +1,76 @@
+name: Perf Bench
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "bench/**"
+      - "src/**"
+      - "tests/**"
+      - "Directory.Build.props"
+      - "Directory.Build.targets"
+      - "Directory.Packages.props"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "bench/**"
+      - "src/**"
+      - "tests/**"
+      - "Directory.Build.props"
+      - "Directory.Build.targets"
+      - "Directory.Packages.props"
+
+jobs:
+  perf-bench:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: windows-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - name: jwt-core
+            filter: "*Jwt*ciOi*"
+          - name: phone-intl
+            filter: "*Phone*0958*"
+          - name: email-simple
+            filter: "*Email*user@example.com*"
+          - name: pipeline-mixed
+            filter: "*CommonPipeline*Bearer*"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore KeelMatrix.Redaction.slnx
+
+      - name: Run perf benchmarks (${{ matrix.shard.name }})
+        shell: pwsh
+        run: >
+          pwsh -NoProfile -File bench/Run-Benchmarks.ps1
+          -Job Short
+          -Filter "${{ matrix.shard.filter }}"
+          -MaxStdevPct 12
+          -Ci
+          -CoolDownSec 0
+
+      - name: Upload benchmark artifacts (${{ matrix.shard.name }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-benchmarks-${{ matrix.shard.name }}
+          path: artifacts/benchmarks
+          if-no-files-found: error
+
+      - name: Publish benchmark summary (${{ matrix.shard.name }})
+        shell: pwsh
+        run: |
+          $f = Get-ChildItem "artifacts/benchmarks/*/SUMMARY.md" -ErrorAction SilentlyContinue |
+               Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if ($f) { Get-Content $f.FullName | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8 }

@@ -1,0 +1,24 @@
+<Project>
+  <!-- Custom build targets shared by all projects -->
+  <!-- Pack the project README and repo icon into the NuGet package root when present. -->
+  <ItemGroup Condition="'$(IsPackable)'=='true'">
+    <None Include="$(MSBuildProjectDirectory)\README.md" Pack="true" PackagePath="" Link="README.md" Condition="Exists('$(MSBuildProjectDirectory)\README.md')" />
+    <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath="" Link="icon.png" Condition="Exists('$(MSBuildThisFileDirectory)icon.png') and '$(PackageIcon)'!=''" />
+  </ItemGroup>
+  
+  <PropertyGroup Condition="'$(IsTestProject)'=='true'">
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+<!--
+  Public API maintenance
+  ######################
+  - After adding or changing public members, update the *PublicAPI.Shipped.txt*
+    and *PublicAPI.Unshipped.txt* files in the affected project.
+  - Keep only a single shipped/unshipped pair per project. If an API is TFM-specific,
+    append a comment to the API line:  // TFM: net8.0  or  // TFM: netstandard2.0
+-->
+
+</Project>

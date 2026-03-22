@@ -1,0 +1,61 @@
+#nullable enable
+KeelMatrix.Redaction.ITextRedactor
+KeelMatrix.Redaction.ITextRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.ApiKeyRedactor
+KeelMatrix.Redaction.ApiKeyRedactor.ApiKeyRedactor() -> void
+KeelMatrix.Redaction.ApiKeyRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.AuthorizationRedactor
+KeelMatrix.Redaction.AuthorizationRedactor.AuthorizationRedactor() -> void
+KeelMatrix.Redaction.AuthorizationRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.AwsAccessKeyRedactor
+KeelMatrix.Redaction.AwsAccessKeyRedactor.AwsAccessKeyRedactor() -> void
+KeelMatrix.Redaction.AwsAccessKeyRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.AzureKeyLikeRedactor
+KeelMatrix.Redaction.AzureKeyLikeRedactor.AzureKeyLikeRedactor() -> void
+KeelMatrix.Redaction.AzureKeyLikeRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.ConnectionStringPasswordRedactor
+KeelMatrix.Redaction.ConnectionStringPasswordRedactor.ConnectionStringPasswordRedactor() -> void
+KeelMatrix.Redaction.ConnectionStringPasswordRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.CookieRedactor
+KeelMatrix.Redaction.CookieRedactor.CookieRedactor() -> void
+KeelMatrix.Redaction.CookieRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.EmailRedactor
+KeelMatrix.Redaction.EmailRedactor.EmailRedactor() -> void
+KeelMatrix.Redaction.EmailRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.GoogleApiKeyRedactor
+KeelMatrix.Redaction.GoogleApiKeyRedactor.GoogleApiKeyRedactor() -> void
+KeelMatrix.Redaction.GoogleApiKeyRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.GuidLikeHexRedactor
+KeelMatrix.Redaction.GuidLikeHexRedactor.GuidLikeHexRedactor() -> void
+KeelMatrix.Redaction.GuidLikeHexRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.GuidRedactor
+KeelMatrix.Redaction.GuidRedactor.GuidRedactor() -> void
+KeelMatrix.Redaction.GuidRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.IpAddressRedactor
+KeelMatrix.Redaction.IpAddressRedactor.IpAddressRedactor() -> void
+KeelMatrix.Redaction.IpAddressRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.JwtTokenRedactor
+KeelMatrix.Redaction.JwtTokenRedactor.JwtTokenRedactor() -> void
+KeelMatrix.Redaction.JwtTokenRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.LongHexTokenRedactor
+KeelMatrix.Redaction.LongHexTokenRedactor.LongHexTokenRedactor() -> void
+KeelMatrix.Redaction.LongHexTokenRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.PhoneRedactor
+KeelMatrix.Redaction.PhoneRedactor.PhoneRedactor() -> void
+KeelMatrix.Redaction.PhoneRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.RegexReplaceRedactor
+KeelMatrix.Redaction.RegexReplaceRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.RegexReplaceRedactor.RegexReplaceRedactor(string! pattern, string! replacement) -> void
+KeelMatrix.Redaction.RegexReplaceRedactor.RegexReplaceRedactor(System.Text.RegularExpressions.Regex! regex, string! replacement) -> void
+KeelMatrix.Redaction.TimestampRedactor
+KeelMatrix.Redaction.TimestampRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.TimestampRedactor.TimestampRedactor() -> void
+KeelMatrix.Redaction.UrlQueryTokenRedactor
+KeelMatrix.Redaction.UrlQueryTokenRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.UrlQueryTokenRedactor.UrlQueryTokenRedactor() -> void
+KeelMatrix.Redaction.UuidNoDashRedactor
+KeelMatrix.Redaction.UuidNoDashRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.UuidNoDashRedactor.UuidNoDashRedactor() -> void
+KeelMatrix.Redaction.WhitespaceNormalizerRedactor
+KeelMatrix.Redaction.WhitespaceNormalizerRedactor.Redact(string! input) -> string!
+KeelMatrix.Redaction.WhitespaceNormalizerRedactor.WhitespaceNormalizerRedactor() -> void

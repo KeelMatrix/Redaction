@@ -1,0 +1,81 @@
+<Project>
+  <!-- Shared build configuration for all projects -->
+
+  <PropertyGroup>
+    <!-- Centralized versioning -->
+    <Version>0.1.0</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <!--
+    Analyzer & Public API policy
+    ############################
+    - We pin AnalysisLevel to a specific version to avoid CI drift when SDKs update.
+    - We enable .NET analyzers and enforce code style in build.
+    - Severities live in .editorconfig.
+    - Public API governance is enforced by Microsoft.CodeAnalysis.PublicApiAnalyzers.
+      * Keep exactly ONE pair of PublicAPI.Shipped.txt / PublicAPI.Unshipped.txt per project.
+      * If an API is TFM-specific, annotate the line with a trailing comment, e.g.:
+            // TFM: net8.0
+            // TFM: netstandard2.0
+      * To add or change public members: update the PublicAPI.Shipped.txt / PublicAPI.Unshipped.txt
+        files in the affected project and review the diff.
+  -->
+  <PropertyGroup>
+    <!-- Only provide default TFMs for packable projects when the project has not set TargetFramework/TargetFrameworks. -->
+    <TargetFrameworks Condition="'$(IsPackable)'=='true' and '$(TargetFramework)'=='' and '$(TargetFrameworks)'==''">net8.0;netstandard2.0</TargetFrameworks>
+
+    <!-- Language & build basics -->
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Analyzer policy (pinned for stability) -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>8.0-recommended</AnalysisLevel>
+
+    <!-- Deterministic builds + docs -->
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsPackable)'=='true'">
+    <Authors Condition="'$(Authors)'==''">KeelMatrix</Authors>
+    <RepositoryUrl Condition="'$(RepositoryUrl)'==''">https://github.com/KeelMatrix/Redaction</RepositoryUrl>
+    <RepositoryType Condition="'$(RepositoryType)'==''">git</RepositoryType>
+    <PackageLicenseExpression Condition="'$(PackageLicenseExpression)'==''">MIT</PackageLicenseExpression>
+    <PackageProjectUrl Condition="'$(PackageProjectUrl)'==''">https://github.com/KeelMatrix/Redaction#readme</PackageProjectUrl>
+    <PackageReadmeFile Condition="'$(PackageReadmeFile)'=='' and Exists('$(MSBuildProjectDirectory)\README.md')">README.md</PackageReadmeFile>
+    <PackageIcon Condition="'$(PackageIcon)'=='' and Exists('$(MSBuildThisFileDirectory)icon.png')">icon.png</PackageIcon>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)'=='true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <!-- Include Public API baseline files if they exist next to a project. -->
+  <ItemGroup>
+    <AdditionalFiles Remove="$(MSBuildProjectDirectory)\PublicAPI.Shipped.txt;$(MSBuildProjectDirectory)\PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\PublicAPI.Shipped.txt')">
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)\PublicAPI.Shipped.txt" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\PublicAPI.Unshipped.txt')">
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)\PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+  <!-- Tests: keep warnings as warnings unless a test project opts in -->
+  <PropertyGroup Condition="'$(IsTestProject)'=='true'">
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+</Project>

@@ -40,7 +40,7 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@256d634097be96e792d6764f9edaefc4320557b1
+        uses: github/codeql-action/init@38697555549f1db7851b81482ff19f1fa5c4fedc
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
@@ -53,6 +53,6 @@ jobs:
           dotnet build src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj --configuration Release --no-restore
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@256d634097be96e792d6764f9edaefc4320557b1
+        uses: github/codeql-action/analyze@38697555549f1db7851b81482ff19f1fa5c4fedc
         with:
           category: /language:${{ matrix.language }}

@@ -21,6 +21,9 @@ on:
       - "Directory.Build.targets"
       - "Directory.Packages.props"
 
+permissions:
+  contents: read
+
 jobs:
   perf-bench:
     if: github.actor != 'dependabot[bot]'

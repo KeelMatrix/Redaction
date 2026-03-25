@@ -11,18 +11,10 @@ namespace KeelMatrix.Redaction {
     /// - Idempotent: reapplying does not change the output.
     /// </summary>
     public sealed class PhoneRedactor : ITextRedactor {
-        // Start-of-match rule:
-        //   (?<!\w)    -> not preceded by a word char (lets us start at '+' or '(' as part of the phone)
-        // Require at least 7 digits in the entire match (prevents masking short numbers):
-        //   (?=(?:\D*\d){7,})
-        // Phone shape (very permissive but safe for masking):
-        //   (?:\+?[\s\-.]*)?            optional leading '+' with optional separators
-        //   (?:\(?\d{1,4}\)?[\s\-.]*){2,}  at least two digit groups (country/area + local parts)
-        //   \d{2,}                      final digit group with ≥2 digits
-        // End-of-match rule:
-        //   (?!\w)    -> not followed by a word char
+        // Capture the surrounding non-word boundaries so replacement can preserve them
+        // without relying on look-around, then validate the digit count in the evaluator.
         private static readonly Regex Phone = RedactionRegex.Create(
-            @"(?<!\w)(?=(?:\D*\d){7,})(?:\+?[\s\-.]*)?(?:\(?\d{1,4}\)?[\s\-.]*){2,}\d{2,}(?!\w)",
+            @"(?<prefix>^|[^\w])(?<phone>(?:\+\d{1,4}[\s\-.]*)?(?:\(\d{1,4}\)|\d{1,4})(?:[\s\-.]+(?:\(\d{1,4}\)|\d{1,4})){2,})(?<suffix>$|[^\w])",
             RegexOptions.None);
 
         /// <inheritdoc/>
@@ -35,7 +27,21 @@ namespace KeelMatrix.Redaction {
                 char ch = input[i];
                 if (ch is >= '0' and <= '9') digits++;
             }
-            return digits < 7 ? input : Phone.Replace(input, "***");
+            return digits < 7
+                ? input
+                : Phone.Replace(input, static match => HasMinimumDigits(match.Groups["phone"].Value)
+                    ? match.Groups["prefix"].Value + "***" + match.Groups["suffix"].Value
+                    : match.Value);
+        }
+
+        private static bool HasMinimumDigits(string value) {
+            int digits = 0;
+            for (int i = 0; i < value.Length && digits < 7; i++) {
+                char ch = value[i];
+                if (ch is >= '0' and <= '9') digits++;
+            }
+
+            return digits >= 7;
         }
     }
 }

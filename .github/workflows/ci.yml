@@ -33,7 +33,7 @@ jobs:
         with:
           dotnet-version: |
             6.0.x
-            8.0.x
+            8.0.408
 
       - name: Restore
         run: dotnet restore KeelMatrix.Redaction.slnx
@@ -64,7 +64,7 @@ jobs:
         with:
           dotnet-version: |
             6.0.x
-            8.0.x
+            8.0.408
 
       - name: Restore
         run: dotnet restore KeelMatrix.Redaction.slnx
@@ -98,7 +98,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 8.0.408
 
       - name: Restore
         run: dotnet restore KeelMatrix.Redaction.slnx
@@ -141,7 +141,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 8.0.408
 
       - name: Push packages to NuGet
         env:

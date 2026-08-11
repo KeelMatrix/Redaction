@@ -129,6 +129,7 @@ jobs:
     needs: pack
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
+      id-token: write
       contents: write
 
     steps:
@@ -143,12 +144,16 @@ jobs:
         with:
           dotnet-version: 10.0.201
 
+      - name: Authenticate to NuGet.org
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: dmitriyzen
+
       - name: Push packages to NuGet
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
-          dotnet nuget push "./artifacts/packages/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
-          dotnet nuget push "./artifacts/packages/*.snupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
+          dotnet nuget push "./artifacts/packages/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
+          dotnet nuget push "./artifacts/packages/*.snupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3

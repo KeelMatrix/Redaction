@@ -85,6 +85,8 @@ jobs:
     needs:
       - validate
       - validate-dependabot
+    outputs:
+      release_version: ${{ steps.release_version.outputs.version }}
     if: |
       always() &&
       !cancelled() &&
@@ -109,11 +111,34 @@ jobs:
       - name: Check for vulnerable dependencies
         run: dotnet list KeelMatrix.Redaction.slnx package --vulnerable
 
+      - name: Resolve release version
+        id: release_version
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            if [[ "$GITHUB_REF_NAME" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+              version="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}"
+            else
+              echo "::error::Release tags must match vX.Y.Z with non-negative integer components."
+              exit 1
+            fi
+          else
+            version=""
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
       - name: Build library
         run: dotnet build src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj --configuration Release --no-restore
 
       - name: Pack
-        run: dotnet pack src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj --configuration Release --no-build --include-symbols --p:SymbolPackageFormat=snupkg --output ./artifacts/packages
+        env:
+          RELEASE_VERSION: ${{ steps.release_version.outputs.version }}
+        run: |
+          pack_args=()
+          if [[ -n "$RELEASE_VERSION" ]]; then
+            pack_args+=("-p:Version=$RELEASE_VERSION")
+          fi
+          dotnet pack src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj --configuration Release --no-build --include-symbols --p:SymbolPackageFormat=snupkg --output ./artifacts/packages "${pack_args[@]}"
 
       - name: Upload packages
         uses: actions/upload-artifact@v7
@@ -127,7 +152,7 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     needs: pack
-    if: ${{ always() && needs.pack.result == 'success' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
+    if: ${{ always() && needs.pack.result == 'success' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v') && needs.pack.outputs.release_version != '' }}
     permissions:
       id-token: write
       contents: write
@@ -152,7 +177,7 @@ jobs:
 
       - name: Push packages to NuGet
         run: |
-          dotnet nuget push "./artifacts/packages/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
+          dotnet nuget push "./artifacts/packages/KeelMatrix.Redaction.${{ needs.pack.outputs.release_version }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
           dotnet nuget push "./artifacts/packages/*.snupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
 
       - name: Create GitHub release

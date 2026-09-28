@@ -28,6 +28,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Verify hidden child PowerShell launch guard
+        shell: pwsh
+        run: ./build/Test-NestedPwshLaunch.ps1 -SelfTest
+
+      - name: Scan repository child PowerShell launches
+        shell: pwsh
+        run: ./build/Test-NestedPwshLaunch.ps1
+
       - name: Setup .NET SDKs
         uses: actions/setup-dotnet@v6
         with:

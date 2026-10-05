@@ -13,9 +13,10 @@ Thanks for contributing to KeelMatrix.Redaction.
 1. Fork the repository and create a feature branch from `main`.
 2. Build the repo with `dotnet build KeelMatrix.Redaction.slnx`.
 3. Run the test suite with `dotnet test tests/KeelMatrix.Redaction.Tests/KeelMatrix.Redaction.Tests.csproj`.
-4. Validate packaging with `dotnet pack src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj -c Release`.
-5. If you change the public API of a packable project, update `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt` in the affected project.
-6. Keep README and package metadata changes aligned with user-facing behavior.
+4. Pack the library with `dotnet pack src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj -c Release --output ./artifacts/packages`.
+5. Keep the root `keelmatrix.website.json` classification and package source sentinels aligned, then validate with `pwsh -NoProfile -File ./build/Validate-WebsiteMetadata.ps1 -PackagePath ./artifacts/packages`.
+6. If you change the public API of a packable project, update `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt` in the affected project.
+7. Keep README and package metadata changes aligned with user-facing behavior.
 
 ## Pull Requests
 

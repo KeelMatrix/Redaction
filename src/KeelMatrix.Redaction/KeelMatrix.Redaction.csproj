@@ -9,7 +9,7 @@
     <EnablePublicApiAnalyzers>true</EnablePublicApiAnalyzers>
     <Description>Privacy-first text redaction primitives for masking secrets, PII, and noisy identifiers in logs, diagnostics, SQL, and CI artifacts.</Description>
     <PackageId>KeelMatrix.Redaction</PackageId>
-    <PackageTags>redaction;masking;pii;secrets;privacy;security;logging;diagnostics</PackageTags>
+    <PackageTags>redaction;masking;pii;secrets;privacy;security;logging;diagnostics;keelmatrix-public-product;keelmatrix-primary</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 

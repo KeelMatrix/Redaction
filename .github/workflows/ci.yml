@@ -148,6 +148,10 @@ jobs:
           fi
           dotnet pack src/KeelMatrix.Redaction/KeelMatrix.Redaction.csproj --configuration Release --no-build --include-symbols --p:SymbolPackageFormat=snupkg --output ./artifacts/packages "${pack_args[@]}"
 
+      - name: Validate website package metadata
+        shell: pwsh
+        run: ./build/Validate-WebsiteMetadata.ps1 -PackagePath ./artifacts/packages
+
       - name: Upload packages
         uses: actions/upload-artifact@v7
         with:

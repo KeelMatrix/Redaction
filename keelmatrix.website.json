@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "packages": {
+    "KeelMatrix.Redaction": {
+      "visibility": "public-product",
+      "role": "primary"
+    }
+  }
+}
